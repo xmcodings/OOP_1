@@ -22,4 +22,5 @@ public:
 	void UI_deletion();
 	void print_error(int);
 	void UI_edit();
+	void UI_printResult();
 };

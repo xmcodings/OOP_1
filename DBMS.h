@@ -38,4 +38,5 @@ public:
 	bool editDBA(int select, long ID, int newAge);
 	bool editDBD(int select, long ID, string newDepartment);
 	bool editDBT(int select, long ID, string newTel);
+	void searching(int searchBy, string value);
 };

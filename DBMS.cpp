@@ -159,7 +159,7 @@ bool DBMS::searchDB(int i, long inputID)
 bool DBMS::searchDB(int i, int inputAge)
 {
 	vector<Student> result;
-	if (i == 2)
+	if (i == 4)
 	{
 		for (unsigned int i = 0; i < this->StudentsData.size(); i++)
 		{
@@ -185,7 +185,7 @@ bool DBMS::searchDB(int i)
 		result = this->StudentsData;
 
 		//sort result
-		//sort(result.begin(), result.end());
+		sort(result.begin(), result.end());
 
 		//store result in SearchResult
 		this->SearchResult = result;
@@ -335,4 +335,31 @@ bool DBMS::editDBT(int select, long inputID, string newTel) {
 	return false;
 }
 
+/*
+void DBMS::searching(int searchBy, string value)
+{
+	// search from this.Studentsdata
+	vector<Student> result;
 
+	if (searchBy == 1) // Search by name(input == 1)
+	{
+		for (unsigned int i = 0; i < this->StudentsData.size(); i++)
+		{
+			if (this->StudentsData[i].getName() == value) result.push_back(StudentsData[i]);
+		}
+	}
+
+	else if (searchBy == 3) // Search by department name(input == 3)
+	{
+		for (unsigned int i = 0; i < this->StudentsData.size(); i++)
+		{
+			if (this->StudentsData[i].getDepartment() == value) result.push_back(StudentsData[i]);
+		}
+	}
+	else {
+
+	}
+	sort(result.begin(), result.end());
+	SearchResult = result;
+}
+*/

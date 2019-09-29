@@ -16,7 +16,6 @@ Student::Student(string name, long id) {
 	this->tel = '0';
 }//name, id 이외에 입력 안된거 있을때
 
-
 bool Student::nameCheck(string name) { // student 길이가 15 이하....
 	if (name.size() <= 15) {
 		return true;
@@ -58,19 +57,15 @@ bool Student::sameId(long id) {
 string Student::getName() {
 	return this->name;
 }
-
 long Student::getID() {
 	return this->id;
 }
-
 string Student::getDepartment() {
 	return this->department;
 }
-
 int Student::getAge() {
 	return this->age;
 }
-
 string Student::getTelephone() {
 	return this->tel;
 }

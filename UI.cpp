@@ -112,32 +112,36 @@ void UI::UI_searching() {
 	case 1:
 		cout << "                    Name >>";
 		name = check_insert_string();
-		// DBMS.search_by_name(name) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (6 / 11) !!!!!!!!!!!!!!!!!!!
+		manager.searchDB(i, name);
+		UI_printResult();
 		break;
 	case 2:
 		cout << "                    ID >>";
 		ID = check_insert_long();
-		// DBMS.search_by_ID(ID) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (7 / 11) !!!!!!!!!!!!!!!!!!!
+		manager.searchDB(i, ID);
+		UI_printResult();
 		break;
 	case 3:
 		cout << "                    department >>";
 		department = check_insert_string();
-		// DBMS.search_by_Dept(dp) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (8 / 11) !!!!!!!!!!!!!!!!!!!
+		manager.searchDB(i, department);
+		UI_printResult();
 		break;
 	case 4:
 		cout << "                    Age >>";
 		age = check_insert_int();
-		// DBMS.search_by_Age(age) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (9 / 11) !!!!!!!!!!!!!!!!!!!
+		manager.searchDB(i, age);
+		UI_printResult();
 		break;
 
 	case 5:
 		// DBMS.search_all() !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (10/ 11)!!!!!!!!!!!!!!!!!!!
 		manager.searchDB(i);
-		vector<Student> sex = manager.getReseult();
+		vector<Student> stds = manager.getReseult();
 		system("cls");
-		for (int i = 0; i < sex.size(); i++)
+		for (int i = 0; i < stds.size(); i++)
 		{
-			Student s = sex[i];
+			Student s = stds[i];
 			cout << s.getName() << s.getID() << s.getDepartment() << s.getAge() << s.getTelephone() << endl;
 
 		}
@@ -216,5 +220,17 @@ void UI::UI_edit() {
 		cin >> newTel;
 		manager.editDBT(selection, ID, newTel);
 		break;
+	}
+}
+
+void UI::UI_printResult()
+{
+	vector<Student> stds = manager.getReseult();
+	system("cls");
+	for (int i = 0; i < stds.size(); i++)
+	{
+		Student s = stds[i];
+		cout << s.getName() << s.getID() << s.getDepartment() << s.getAge() << s.getTelephone() << endl;
+
 	}
 }
