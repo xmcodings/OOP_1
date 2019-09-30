@@ -16,43 +16,6 @@ Student::Student(string name, long id) {
 	this->tel = '0';
 }//name, id 이외에 입력 안된거 있을때
 
-bool Student::nameCheck(string name) { // student 길이가 15 이하....
-	if (name.size() <= 15) {
-		return true;
-	}
-	else {
-		return false;
-	}
-} //근데 영어로만 하는 법을 모르겠음..
-bool Student::idCheck(long id) {
-	if (100000000 <= id < 1000000000) {
-		return true; // id 가 9자리
-	}
-	else {
-		return false;
-	}
-}
-bool Student::ageCheck(int age) {
-	if (0 < age < 1000) {
-		return true; // 나이가 3자리수
-	}
-	else {
-		return false;
-	}
-}
-bool Student::telCheck(string tel) {
-	if (tel.length() > 10) {
-		return true; // 전화번호
-	}
-	else {
-		return false;
-	}
-}
-bool Student::sameId(long id) {
-	//DBMS에서 서치 완성하고 이용하면 될듯한데 잘모르겠음
-	return true;
-}
-
 //set 해줬던걸 get해야지
 string Student::getName() {
 	return this->name;
@@ -69,3 +32,25 @@ int Student::getAge() {
 string Student::getTelephone() {
 	return this->tel;
 }
+
+bool Student::compareName(const Student& a, const Student& b)
+{
+	return a.name < b.name;
+}
+
+bool Student::compareId(const Student& a, const Student& b)
+{
+	return a.id < b.id;
+}
+
+bool Student::compareDept(const Student& a, const Student& b)
+{
+	return a.department < b.department;
+}
+
+bool Student::compareAge(const Student& a, const Student& b)
+{
+	return a.age < b.age;
+}
+
+

@@ -1,10 +1,13 @@
 #include "UI.h"
 
 
-int main(void) {
+int main(int argc, char* argv[]) {
 
-	DBMS studentDB;
-	UI UI(studentDB);
+	string filename;
+	filename = argv[1];
+	DBMS studentDB(filename);
+	input_helper input;
+	UI UI(studentDB, input);
 	UI.go();
 	system("pause");
 	return 0;

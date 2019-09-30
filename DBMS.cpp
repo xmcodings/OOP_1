@@ -2,110 +2,40 @@
 /*
 예외처리, 파일입출력, exit() 미작성
 */
-DBMS::DBMS()
+DBMS::DBMS(string filename)
 {
 	// loadFile() 사용해서 명령행인자 파일 존재 시 내용 다 viewer객체 안의 dbms에 집어넣고,
 	//			  존재하지 않을 시 빈 file 생성.
-	string line;
-	char str[100], * context; //파일에서 받아오는line char형 변환 하기 위한 str
-	
+	this->filename = filename;
+	loadFile(filename);
 
-	ifstream myfile("student.txt");
-	if (myfile.is_open()) {
-		while (getline(myfile, line)) {
-			strcpy_s(str, line.c_str()); // line: string ->  char 변환
-			char* tok = strtok_s(str, ",", &context); // 구분자","로 파싱 , context 는 보안으로 백업용
-			vector<char*> tok_s; //tok_save : student에 insert하기위한 vector
+}
 
-			while (tok != NULL) { //tok_s 에 데이터 저장
-				tok_s.push_back(tok);
-				tok = strtok_s(NULL, ",", &context);
-			}
-
-			string tok_name = tok_s[0]; // char to string 변환
-			string tok_depa = tok_s[2];
-			string tok_tel = tok_s[4];
-			StudentsData.push_back(Student(tok_name, atol(tok_s[1]), tok_depa, atoi(tok_s[3]), tok_tel)); // atoi : char to int , atol : char to long
-		}
-		myfile.close();
-	}
-	else
-		cout << "Unable to open file !!";
+DBMS::DBMS()
+{
 }
 
 
-void DBMS::insertion(string name, long id,string dept, int age, string tel)
+
+
+bool DBMS::insertion(string name, long id, string dept, int age, string tel)
 {
 	Student newStd(name, id, dept, age, tel);
 	if (StudentsData.size() == 0)
 	{
 		StudentsData.push_back(newStd);
+		return true;
 	}
 	for (int i = 0; i < StudentsData.size(); i++) {
 		if (id == (StudentsData.at(i).getID())) {
-			return;
+			return false;
 		}
 	}
-		StudentsData.push_back(newStd);
+	StudentsData.push_back(newStd);
+	return true;
 }
 
-	/*
-	int DBMS::insert_id(long id) {
-		for (int i = 0; i < StudentsData.size() - 1; i++) {
-			if (id == (StudentsData.at(i).getID())) {
-				return 0;
-			}
-			else return 1;
-		}
-		return 1;
-	}
-
-
-	int DBMS::insert_tel(long tel)
-	{
-		stdTel = tel;
-		return 1;
-	}
-	int DBMS::insert_name(string name)
-	{
-		stdName = name;
-		return 1;
-	}
-	int DBMS::insert_dept(string dept)
-	{
-		stdDept = dept;
-		return 1;
-	}
-	int DBMS::insert_age(int age)
-	{
-		stdAge = age;
-		return 1;
-	}
-	*/
-
-	//name. Department
-
-
-void DBMS::saveFile() {
-		string name, id, age, department, tel;
-
-		ofstream myfile("student.txt");
-		if (myfile.is_open()) {
-			for (int i = 0; i < StudentsData.size(); i++) {
-				name = StudentsData[i].getName();
-				id = to_string(StudentsData[i].getID());
-				department = StudentsData[i].getDepartment();
-				age = to_string(StudentsData[i].getAge());
-				tel = StudentsData[i].getTelephone();
-
-				string str = name + "," + id + "," + department + "," + age + "," + tel + "\n";
-				myfile << str;
-			}
-			myfile.close();
-		}
-		else
-			cout << "Unable to save !!";
-	}
+//
 
 bool DBMS::searchDB(int i, string inputStr)
 {
@@ -127,7 +57,7 @@ bool DBMS::searchDB(int i, string inputStr)
 	else return false;
 
 	//sort result
-	sort(result.begin(), result.end());
+	sort(result.begin(), result.end(), Student::compareName);
 
 	//store result in SearchResult
 	this->SearchResult = result;
@@ -148,7 +78,7 @@ bool DBMS::searchDB(int i, long inputID)
 	else return false;
 
 	//sort result
-	sort(result.begin(), result.end());
+	sort(result.begin(), result.end(), Student::compareName);
 
 	//store result in SearchResult
 	this->SearchResult = result;
@@ -169,7 +99,7 @@ bool DBMS::searchDB(int i, int inputAge)
 	else return false;
 
 	//sort result
-	sort(result.begin(), result.end());
+	sort(result.begin(), result.end(), Student::compareName);
 
 	//store result in SearchResult
 	this->SearchResult = result;
@@ -185,7 +115,7 @@ bool DBMS::searchDB(int i)
 		result = this->StudentsData;
 
 		//sort result
-		sort(result.begin(), result.end());
+		sort(result.begin(), result.end(), Student::compareName);
 
 		//store result in SearchResult
 		this->SearchResult = result;
@@ -335,31 +265,109 @@ bool DBMS::editDBT(int select, long inputID, string newTel) {
 	return false;
 }
 
-/*
-void DBMS::searching(int searchBy, string value)
-{
-	// search from this.Studentsdata
-	vector<Student> result;
-
-	if (searchBy == 1) // Search by name(input == 1)
-	{
-		for (unsigned int i = 0; i < this->StudentsData.size(); i++)
-		{
-			if (this->StudentsData[i].getName() == value) result.push_back(StudentsData[i]);
+bool DBMS::deletion(long StudentID) {
+	vector<Student>::iterator Iter; //vector 포인터
+	Iter = StudentsData.begin();
+	for (int i = 0; i < StudentsData.size(); i++) {
+		if (StudentsData[i].getID() == StudentID) {
+			StudentsData.erase(Iter);
+			return true;
 		}
+		Iter++;
 	}
+	return false;
+}
 
-	else if (searchBy == 3) // Search by department name(input == 3)
-	{
-		for (unsigned int i = 0; i < this->StudentsData.size(); i++)
-		{
-			if (this->StudentsData[i].getDepartment() == value) result.push_back(StudentsData[i]);
+void DBMS::loadFile(string filename)
+{
+	string line;
+	char str[100], * context; //파일에서 받아오는line char형 변환 하기 위한 str
+
+
+	ifstream myfile(filename);
+	if (myfile.is_open()) {
+		while (getline(myfile, line)) {
+			strcpy_s(str, line.c_str()); // line: string ->  char 변환
+			char* tok = strtok_s(str, ",", &context); // 구분자","로 파싱 , context 는 보안으로 백업용
+			vector<char*> tok_s; //tok_save : student에 insert하기위한 vector
+
+			while (tok != NULL) { //tok_s 에 데이터 저장
+				tok_s.push_back(tok);
+				tok = strtok_s(NULL, ",", &context);
+			}
+
+			string tok_name = tok_s[0]; // char to string 변환
+			string tok_depa = tok_s[2];
+			string tok_tel = tok_s[4];
+			StudentsData.push_back(Student(tok_name, atol(tok_s[1]), tok_depa, atoi(tok_s[3]), tok_tel)); // atoi : char to int , atol : char to long
 		}
+		myfile.close();
 	}
 	else {
-
+		// 파일없을때 아무일도 없음
 	}
-	sort(result.begin(), result.end());
-	SearchResult = result;
+		
 }
-*/
+
+void DBMS::saveFile() {
+	string name, id, age, department, tel;
+
+	ofstream myfile(filename);
+	if (myfile.is_open()) {
+		for (int i = 0; i < StudentsData.size(); i++) {
+			name = StudentsData[i].getName();
+			id = to_string(StudentsData[i].getID());
+			department = StudentsData[i].getDepartment();
+			age = to_string(StudentsData[i].getAge());
+			tel = StudentsData[i].getTelephone();
+
+			string str = name + "," + id + "," + department + "," + age + "," + tel + "\n";
+			myfile << str;
+		}
+		myfile.close();
+	}
+	else
+		cout << "Unable to save !!";
+}
+
+bool DBMS::checkID(long id)
+{
+	if (StudentsData.size() == 0)
+	{
+		return false;
+	}
+	for (int i = 0; i < StudentsData.size(); i++) {
+		if (id == (StudentsData.at(i).getID())) {
+			searchDB(2, id);
+			return true;
+		}
+	}
+	return false;
+}
+
+string DBMS::sortBy(int sortby)
+{
+	switch (sortby)
+	{
+	case 0:
+		sort(SearchResult.begin(), SearchResult.end(), Student::compareName);
+		return "<Sorted by name>";
+		break;
+
+	case 1:
+		sort(SearchResult.begin(), SearchResult.end(), Student::compareId);
+		return "<Sorted by ID>";
+		break;
+	case 2: 
+		sort(SearchResult.begin(), SearchResult.end(), Student::compareDept);
+		return "<Sorted by department>";
+		break;
+	case 3:
+		sort(SearchResult.begin(), SearchResult.end(), Student::compareAge);
+		return "<Sorted by age>";
+		break;
+	default:
+		return "error";
+		break;
+	}
+}

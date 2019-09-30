@@ -1,17 +1,20 @@
 #include "UI.h"
-#include "Student.h"
-#include "type_check.h"
+#include "input_helper.h"
 
 
-UI::UI(DBMS studentDB)
+using namespace std;
+
+
+UI::UI(DBMS studentDB, input_helper input_helper)
 {
 	manager = studentDB;
+	input = input_helper;
 }
 
 void UI::go() {
 	int user_celection;
+	cout.setf(ios::right);
 	while (1) {
-
 		/*************** Menu 띄우기 ****************************************************************/
 		user_celection = this->print_menu();
 		if (user_celection == 5)
@@ -25,7 +28,7 @@ void UI::go() {
 			this->UI_insertion();
 			break;
 		case 2:
-			this->UI_searching();
+			this->UI_search();
 			break;
 		case 3:
 			this->UI_deletion();
@@ -49,10 +52,10 @@ int UI::print_menu() {
 	cout << "                 1. Insert        \n\n";
 	cout << "                 2. Search        \n\n";
 	cout << "                 3. Delete        \n\n";
-	cout << "                 4. Edit          \n\n";
+	cout << "                 4. Edit		   \n\n";
 	cout << "                 5. Terminate     \n\n";
 	cout << "          -------------------------            \n\n\n";
-	cout << "          Choose Number >> ";
+	cout << setw(25) << "Choose Number >> ";
 	cin >> i;
 	return i;
 };
@@ -67,31 +70,41 @@ void UI::UI_insertion() {
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cout << "\n ======== Student Management System ========\n\n\n";
 	cout << "        ---------- Insertion ----------            \n\n\n";
-
-	// insert name
 	cout << "           1. Student Name       : ";
-	name = check_insert_string();
-	// insert ID
+	name = input.insert_name_dept_tel();
 	cout << "\n\n           2. Student ID         : ";
-	ID = check_insert_long();
-	// insert Department
+	ID = input.insert_id();
 	cout << "\n\n           3. Student Department : ";
-	department = check_insert_string();
-	// insert Age
+	department = input.insert_name_dept_tel();
 	cout << "\n\n           4. Student Age        : ";
-	age = check_insert_int();
-	// insert tel
+	age = input.insert_age();
 	cout << "\n\n           5. Student Tel.       : ";
-	tel = check_insert_string();
-	
-
+	tel = input.insert_name_dept_tel();
 	cout << "\n        -------------------------------            \n\n";
-	cout << "    Insertion complete. Press Enter to back to menu ";
 
-	// int a = DBMS.insertion(name, string) (0 이면 학번 중복)
-	manager.insertion(name, ID, department, age, tel);
+	cout.setf(ios::left, ios::adjustfield);
+	cout << string(80, '-') << endl;
+	cout << setw(20) << "NAME" << setw(14) << "ID" << setw(20) << "DEPARTMENT" << setw(5) << "AGE" << setw(20) << "TELEPHONE" << endl;
+	cout << setw(20) << name << setw(14) << ID << setw(20) << department << setw(5) << age << setw(15) << tel << endl;
+	cout << string(80, '-') << endl;
+	cout.setf(ios::right, ios::adjustfield);
+	int check = 0;
+	cout << "      Do you want to insert? (1=Yes, 2=No) >> ";
+	check = input.insert_int_1_or_2();
+	if (check == 1) {
+		check = manager.insertion(name, ID, department, age, tel);
+		if (check == false) {
+			cout << "     Insertion failed. there exists same ID..Press Enter to back to menu" << endl;
+		}
+		else {
+			cout << "    Insertion complete. Press Enter to back to menu " << endl;
+		}
+	}
+	else {
+		cout << "    Insertion denied. Press Enter to back to menu " << endl;
+	}
 };
-void UI::UI_searching() {
+void UI::UI_search() {
 	int i;
 	string name;
 	string department;
@@ -106,68 +119,80 @@ void UI::UI_searching() {
 	cout << "                    4. Age	\n\n";
 	cout << "                    5. List all \n\n";
 	cout << "               Choose Number >> ";
-	i = check_int_1_to_5();
+	i = input.insert_int_1_to_5();
 	cout << "          -------------------------------            \n\n\n";
 	switch (i) {
 	case 1:
-		cout << "                    Name >>";
-		name = check_insert_string();
+		cout << setw(25) << " Name >> ";
+		name = input.insert_name_dept_tel();
 		manager.searchDB(i, name);
-		UI_printResult();
 		break;
 	case 2:
-		cout << "                    ID >>";
-		ID = check_insert_long();
+		cout << setw(25) << "ID >> ";
+		ID = input.insert_id();
 		manager.searchDB(i, ID);
-		UI_printResult();
 		break;
 	case 3:
-		cout << "                    department >>";
-		department = check_insert_string();
+		cout << setw(25) << "department >> ";
+		department = input.insert_string();
 		manager.searchDB(i, department);
-		UI_printResult();
 		break;
 	case 4:
-		cout << "                    Age >>";
-		age = check_insert_int();
+		cout << setw(25) << "Age >> ";
+		age = input.insert_age();
 		manager.searchDB(i, age);
-		UI_printResult();
 		break;
 
 	case 5:
-		// DBMS.search_all() !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (10/ 11)!!!!!!!!!!!!!!!!!!!
 		manager.searchDB(i);
-		vector<Student> stds = manager.getReseult();
-		system("cls");
-		for (int i = 0; i < stds.size(); i++)
-		{
-			Student s = stds[i];
-			cout << s.getName() << s.getID() << s.getDepartment() << s.getAge() << s.getTelephone() << endl;
 
-		}
+
 
 		break;
-
 	}
+	int sortAgain = 0;
+	int count = 0;
+	do
+	{
+		system("cls");
+		
+		cout << manager.sortBy(count % 4) << endl;
+		this->searched_student = manager.getReseult();
+		this->print_students();
+		cout << "Press 1 to sort differnetly, 2 to exit" << endl;
+		sortAgain = input.insert_int_1_or_2();
+		count = count + 1;
 
+	} while (sortAgain == 1);
+	
 };
 void UI::UI_deletion() {
 	long id;
 	system("cls");
 	cout << "\n ======== Student Management System ========\n\n\n";
 	cout << "          ---------- Deletion ----------            \n\n\n";
-	cout << "\n\n               Student ID : ";
-	id = check_insert_long();
+	cout << "\n\n" << setw(25) << "Student ID : ";
+	id = input.insert_id();
 
-	// manager.deletion(long ID)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (11 /11) !!!!!!!!!!!!!!!!!!!
+	if (!(manager.checkID(id)))
+	{
+		cout << " There is no such an ID. Press Enter to back to menu  >> \n";
+		return;
+	}
+	this->searched_student = manager.getReseult();
+	this->print_students();
 
-};
-
-
-void UI::print_error(int error_num) {
-
-};
-
+	int check = 0;
+	cout << "      Do you want to delete? (1=Yes, 2=No) >> ";
+	check = input.insert_int_1_or_2();
+	if (check == 1) {
+		check = manager.deletion(id);
+		cout << "    deletion complete. Press Enter to back to menu " << endl;
+	}
+	else {
+		cout << "    deletion denied. Press Enter to back to menu " << endl;
+	}
+}
 void UI::UI_edit() {
 	int selection, newAge;
 	string newName, newDepartment, newTel;
@@ -175,62 +200,70 @@ void UI::UI_edit() {
 	long newID;
 	system("cls");
 	cout << "\n ======== Student Management System ========\n\n\n";
-	cout << "          ---------- Edit ----------            \n\n\n";
-	cout << "1.name\n";
-	cout << "2.ID\n";
-	cout << "3.Department\n";
-	cout << "4.Age\n";
-	cout << "5.Tel\n\n\n\n";
-	cout << "변경할 내용을 고르세요\n";
-	cin >> selection;
+	cout << setw(35) << "Insert student's ID >> ";
+	ID = input.insert_id();
+	
+	if (!(manager.checkID(ID)))
+	{
+		cout << " no ID, Press Enter to back to menu >> \n";
+		return;
+	}
 
+	this->searched_student = manager.getReseult();
+	this->print_students();
+
+	cout << "\n          ---------- Edit ----------            \n\n\n";
+	cout << "                    1. Name \n\n";
+	cout << "                    2. Department	 \n\n";
+	cout << "                    3. Age	\n\n";
+	cout << "                    4. Telephone	\n\n";
+	cout << "                    5. Back to menu \n\n";
+	cout << "               Choose Number >> ";
+	selection = input.insert_int_1_to_5();
+	if (selection != 5)
+		cout << "\nChange to : ";
 	switch (selection) {
-	case 1:
-		cout << " ID검색 >>";
-		cin >> ID;
-		cout << "Change to:";
-		cin >> newName;
+	case 1: //Name
+		newName = input.insert_name_dept_tel();
 		manager.editDBN(selection, ID, newName);
 		break;
-	case 2:
-		cout << " ID검색 >>";
-		cin >> ID;
-		cout << "Change to:";
-		cin >> newID;
-		manager.editDBID(selection, ID, newID);
-		break;
-	case 3:
-		cout << " ID검색 >>";
-		cin >> ID;
-		cout << "Change to:";
-		cin >> newDepartment;
+	case 2: //Department
+		newDepartment = input.insert_name_dept_tel();
 		manager.editDBD(selection, ID, newDepartment);
 		break;
-	case 4:
-		cout << "ID검색";
-		cin >> ID;
-		cout << "Change to:";
-		cin >> newAge;
+	case 3: //Age
+		newAge = input.insert_age();
 		manager.editDBA(selection, ID, newAge);
 		break;
-	case 5:
-		cout << "ID검색";
-		cin >> ID;
-		cout << "Change to:";
-		cin >> newTel;
+	case 4: //Tel
+		newTel = input.insert_name_dept_tel();
 		manager.editDBT(selection, ID, newTel);
 		break;
+	case 5:
+		break;
 	}
+	cout << "\n             Press Enter to back to menu >> ";
 }
 
-void UI::UI_printResult()
-{
-	vector<Student> stds = manager.getReseult();
-	system("cls");
-	for (int i = 0; i < stds.size(); i++)
+void UI::print_students() {
+	cout.setf(ios::left, ios::adjustfield);
+	cout << string(80, '-') << endl;
+	cout << setw(20) << "NAME";
+	cout << setw(14) << "ID";
+	cout << setw(20) << "DEPARTMENT";
+	cout << setw(5) << "AGE";
+	cout << setw(20) << "TELEPHONE" << endl;
+	cout << string(80, '-') << endl;
+	for (int i = 0; i < this->searched_student.size(); i++)
 	{
-		Student s = stds[i];
-		cout << s.getName() << s.getID() << s.getDepartment() << s.getAge() << s.getTelephone() << endl;
-
+		Student s = this->searched_student[i];
+		cout << setw(20) << s.getName();
+		cout << setw(14) << s.getID();
+		cout << setw(20) << s.getDepartment();
+		cout << setw(5) << s.getAge();
+		cout << setw(15) << s.getTelephone() << endl;
 	}
+	cout << setw(80) << endl;
+	cout.setf(ios::right, ios::adjustfield);
 }
+
