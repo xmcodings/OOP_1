@@ -4,21 +4,22 @@
 #include<string>
 #include "Student.h"
 #include "DBMS.h"
-#include "input_helper.h"
+#include "Input_Helper.h"
 
 class UI {
-public:
-
-	input_helper input;
-	DBMS manager;
+private:
 	vector<Student> searched_student;
-	UI(DBMS studentDB, input_helper helper);
+public:
+	Input_Helper input;
+	DBMS manager;
 
+
+	UI(DBMS studentDB, Input_Helper helper);
 	void go();
 	int print_menu();
-	void UI_insertion();
+	void UI_insert();
 	void UI_search();
-	void UI_deletion();
+	void UI_delete();
 	void print_students();
 	void UI_edit();
 

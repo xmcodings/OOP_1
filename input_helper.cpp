@@ -7,8 +7,8 @@
 
 using namespace std;
 
-input_helper::input_helper() {};
-int input_helper::insert_int() {
+Input_Helper::Input_Helper() {};
+int Input_Helper::insert_int() {
 	int i;
 	while (1) {
 		cin >> i;
@@ -24,7 +24,7 @@ int input_helper::insert_int() {
 	}
 	return i;
 }
-int input_helper::insert_int_1_to_5() {
+int Input_Helper::insert_int_1_to_5() {
 	int a = 0;
 	while (1) {
 		a = insert_int();
@@ -35,7 +35,7 @@ int input_helper::insert_int_1_to_5() {
 	}
 	return a;
 }
-int input_helper::insert_int_1_or_2() {
+int Input_Helper::insert_int_1_or_2() {
 	int a = 0;
 	while (1) {
 		a = insert_int();
@@ -46,7 +46,7 @@ int input_helper::insert_int_1_or_2() {
 	}
 	return a;
 }
-int input_helper::insert_int_with_pass() {
+int Input_Helper::insert_int_with_pass() {
 	int i;
 	string str;
 	while (1) {
@@ -66,7 +66,7 @@ int input_helper::insert_int_with_pass() {
 	}
 	return i;
 }
-int input_helper::insert_age() {
+int Input_Helper::insert_age() {
 	int a = 0;
 	while (1) {
 		a = insert_int_with_pass();
@@ -78,7 +78,7 @@ int input_helper::insert_age() {
 	return a;
 }
 
-long input_helper::insert_long() {
+long Input_Helper::insert_long() {
 
 	long ID;
 	while (1) {
@@ -95,7 +95,7 @@ long input_helper::insert_long() {
 	}
 	return ID;
 }
-long input_helper::insert_id() {
+long Input_Helper::insert_id() {
 	long id = 0;
 	while (1) {
 		id = insert_long();
@@ -108,7 +108,7 @@ long input_helper::insert_id() {
 	return id;
 }
 
-string input_helper::insert_string() {
+string Input_Helper::insert_string() {
 	string str;
 	while (1) {
 		getline(cin, str, '\n');
@@ -120,7 +120,7 @@ string input_helper::insert_string() {
 
 	}
 }
-string input_helper::insert_name_dept_tel() {
+string Input_Helper::insert_name_dept_tel() {
 	string str;
 	while (1) {
 		str = insert_string();

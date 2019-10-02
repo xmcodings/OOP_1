@@ -1,11 +1,11 @@
 #include "UI.h"
-#include "input_helper.h"
+#include "Input_Helper.h"
 
 
 using namespace std;
 
 
-UI::UI(DBMS studentDB, input_helper input_helper)
+UI::UI(DBMS studentDB, Input_Helper input_helper)
 {
 	manager = studentDB;
 	input = input_helper;
@@ -20,18 +20,19 @@ void UI::go() {
 		if (user_celection == 5)
 		{
 			manager.saveFile();
+			manager.saveLog();
 			break;
 		}
 		/************** switch로 분할 처리 **********************************************************/
 		switch (user_celection) {
 		case 1:
-			this->UI_insertion();
+			this->UI_insert();
 			break;
 		case 2:
 			this->UI_search();
 			break;
 		case 3:
-			this->UI_deletion();
+			this->UI_delete();
 			break;
 		case 4:
 			this->UI_edit();
@@ -59,7 +60,7 @@ int UI::print_menu() {
 	cin >> i;
 	return i;
 };
-void UI::UI_insertion() {
+void UI::UI_insert() {
 	string name;
 	string department;
 	string tel;
@@ -92,7 +93,7 @@ void UI::UI_insertion() {
 	cout << "      Do you want to insert? (1=Yes, 2=No) >> ";
 	check = input.insert_int_1_or_2();
 	if (check == 1) {
-		check = manager.insertion(name, ID, department, age, tel);
+		check = manager.insertDB(name, ID, department, age, tel);
 		if (check == false) {
 			cout << "     Insertion failed. there exists same ID..Press Enter to back to menu" << endl;
 		}
@@ -146,8 +147,6 @@ void UI::UI_search() {
 	case 5:
 		manager.searchDB(i);
 
-
-
 		break;
 	}
 	int sortAgain = 0;
@@ -155,18 +154,16 @@ void UI::UI_search() {
 	do
 	{
 		system("cls");
-		
 		cout << manager.sortBy(count % 4) << endl;
 		this->searched_student = manager.getReseult();
 		this->print_students();
-		cout << "Press 1 to sort differnetly, 2 to exit" << endl;
+		cout << "Press 1 to sort differently, 2 to exit" << endl;
 		sortAgain = input.insert_int_1_or_2();
 		count = count + 1;
-
 	} while (sortAgain == 1);
 	
 };
-void UI::UI_deletion() {
+void UI::UI_delete() {
 	long id;
 	system("cls");
 	cout << "\n ======== Student Management System ========\n\n\n";
@@ -186,7 +183,7 @@ void UI::UI_deletion() {
 	cout << "      Do you want to delete? (1=Yes, 2=No) >> ";
 	check = input.insert_int_1_or_2();
 	if (check == 1) {
-		check = manager.deletion(id);
+		check = manager.deleteDB(id);
 		cout << "    deletion complete. Press Enter to back to menu " << endl;
 	}
 	else {
@@ -202,7 +199,7 @@ void UI::UI_edit() {
 	cout << "\n ======== Student Management System ========\n\n\n";
 	cout << setw(35) << "Insert student's ID >> ";
 	ID = input.insert_id();
-	
+
 	if (!(manager.checkID(ID)))
 	{
 		cout << " no ID, Press Enter to back to menu >> \n";
@@ -214,9 +211,9 @@ void UI::UI_edit() {
 
 	cout << "\n          ---------- Edit ----------            \n\n\n";
 	cout << "                    1. Name \n\n";
-	cout << "                    2. Department	 \n\n";
-	cout << "                    3. Age	\n\n";
-	cout << "                    4. Telephone	\n\n";
+	cout << "                    2. Department    \n\n";
+	cout << "                    3. Age   \n\n";
+	cout << "                    4. Telephone   \n\n";
 	cout << "                    5. Back to menu \n\n";
 	cout << "               Choose Number >> ";
 	selection = input.insert_int_1_to_5();
@@ -225,26 +222,25 @@ void UI::UI_edit() {
 	switch (selection) {
 	case 1: //Name
 		newName = input.insert_name_dept_tel();
-		manager.editDBN(selection, ID, newName);
+		manager.editDB(selection, ID, newName);
 		break;
 	case 2: //Department
 		newDepartment = input.insert_name_dept_tel();
-		manager.editDBD(selection, ID, newDepartment);
+		manager.editDB(selection, ID, newDepartment);
 		break;
 	case 3: //Age
 		newAge = input.insert_age();
-		manager.editDBA(selection, ID, newAge);
+		manager.editDB(selection, ID, newAge);
 		break;
 	case 4: //Tel
 		newTel = input.insert_name_dept_tel();
-		manager.editDBT(selection, ID, newTel);
+		manager.editDB(selection, ID, newTel);
 		break;
 	case 5:
 		break;
 	}
 	cout << "\n             Press Enter to back to menu >> ";
 }
-
 void UI::print_students() {
 	cout.setf(ios::left, ios::adjustfield);
 	cout << string(80, '-') << endl;

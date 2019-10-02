@@ -4,6 +4,7 @@
 #include <vector> //어레이리스트 C++에서
 #include <algorithm> //std::sort() 사용을 위해
 #include "Student.h"
+#include <time.h>
 using namespace std;
 
 class DBMS {
@@ -15,6 +16,8 @@ private:
 	//private 안에 넣고 DBMS 생성자를 만들어서 나중에 DBMS 구현할 때 구체적으로..
 	vector<Student> SearchResult;
 
+	vector<string> Filelog;
+
 	string filename;
 
 
@@ -22,7 +25,7 @@ private:
 public:
 	DBMS(string filename);
 	DBMS();
-	bool insertion(string name, long id, string dept, int age, string tel);
+	bool insertDB(string name, long id, string dept, int age, string tel);
 	
 	// searchDB: ui에서 bool값 받음 -> 참이면 ui에서 SearchResult 출력, 거짓이면 에러상황 표시
 	bool searchDB(int i, string inputStr);
@@ -31,14 +34,14 @@ public:
 	bool searchDB(int i);
 	vector<Student> getReseult();
 	void saveFile();
+	void saveLog();
 	bool checkID(long id);
 	string sortBy(int sortby);
 	
-	
-	bool editDBID(int select, long ID, long newID);
-	bool editDBN(int select, long ID, string newName);
-	bool editDBA(int select, long ID, int newAge);
-	bool editDBD(int select, long ID, string newDepartment);
-	bool editDBT(int select, long ID, string newTel);
-	bool deletion(long StudentID);
+	void editDB(int select, long inputID, string newString);
+	void editDB(int select, long inputID, int newAge);
+
+	bool deleteDB(long StudentID);
+
+	string getTime();
 };

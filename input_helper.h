@@ -2,10 +2,10 @@
 #include<string>
 #include <iomanip>
 
-class input_helper {
+class Input_Helper {
 
 public:
-	input_helper();
+	Input_Helper();
 	int insert_int();
 	int insert_int_1_to_5();
 	int insert_int_1_or_2();

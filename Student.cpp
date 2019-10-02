@@ -13,7 +13,7 @@ Student::Student(string name, long id) {
 	this->id = id;
 	this->age = 0;//여기서부터 초기화
 	this->department = "";
-	this->tel = '0';
+	this->tel = "";
 }//name, id 이외에 입력 안된거 있을때
 
 //set 해줬던걸 get해야지
@@ -35,7 +35,12 @@ string Student::getTelephone() {
 
 bool Student::compareName(const Student& a, const Student& b)
 {
-	return a.name < b.name;
+	string aName, bName;
+	aName = a.name;
+	bName = b.name;
+	transform(aName.begin(), aName.end(), aName.begin(), ::tolower);
+	transform(bName.begin(), bName.end(), bName.begin(), ::tolower);
+	return aName < bName;
 }
 
 bool Student::compareId(const Student& a, const Student& b)
@@ -45,7 +50,12 @@ bool Student::compareId(const Student& a, const Student& b)
 
 bool Student::compareDept(const Student& a, const Student& b)
 {
-	return a.department < b.department;
+	string aDept, bDept;
+	aDept = a.department;
+	bDept = b.department;
+	transform(aDept.begin(), aDept.end(), aDept.begin(), ::tolower);
+	transform(bDept.begin(), bDept.end(), bDept.begin(), ::tolower);
+	return aDept < bDept;
 }
 
 bool Student::compareAge(const Student& a, const Student& b)
